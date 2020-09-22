@@ -6,6 +6,7 @@ const cors = require("cors");
 const helemet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
+const compression = require("compression");
 
 const postRouter = require("./routes/postRoutes");
 const userRouter = require("./routes/userRoutes");
@@ -41,6 +42,8 @@ app.use(express.json());
 app.use(mongoSanitize());
 // data sanitization kunder
 app.use(xss());
+
+app.use(compression());
 
 // Routes
 
