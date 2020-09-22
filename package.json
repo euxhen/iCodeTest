@@ -1,0 +1,30 @@
+{
+  "name": "icode",
+  "version": "1.0.0",
+  "description": "iCode Project",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "start:prod": "NODE_ENV=production nodemon server.js"
+  },
+  "author": "Euxhen Ibi",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/storage": "^5.3.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-mongo-sanitize": "^2.0.0",
+    "express-rate-limit": "^5.1.3",
+    "helmet": "^4.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.19",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2",
+    "nodemailer": "^6.4.6",
+    "pug": "^3.0.0",
+    "validator": "^13.1.1",
+    "xss-clean": "^0.1.1"
+  }
+}
