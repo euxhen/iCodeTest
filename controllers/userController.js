@@ -4,21 +4,8 @@ const AppError = require("../utils/appError");
 const multer = require("multer");
 const sharp = require("sharp");
 const cloudinary = require("cloudinary");
-const cloudinaryStorage = require("multer-storage-cloudinary");
 
 const multerStorage = multer.memoryStorage();
-
-cloudinary.config({
-  cloud_name: "devztowmv",
-  api_key: "799932288286729",
-  api_secret: "Q2A4aTvBaOhOKvymzIOD1MlwYIw",
-});
-const storage = cloudinaryStorage({
-  cloudinary,
-  folder: "user-images",
-  allowedFormats: ["jpg", "png"],
-  transformation: [{ width: 500, height: 500, crop: "limit" }],
-});
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -29,7 +16,7 @@ const multerFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage: storage,
+  storage: multerStorage,
   fileFilter: multerFilter,
 });
 
@@ -43,7 +30,8 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat("jpeg")
-    .jpeg({ quality: 90 });
+    .jpeg({ quality: 90 })
+    .toFile(`https://api.cloudinary.com/v1_1/devztowmv/${req.file.filename}`);
 
   next();
 });
