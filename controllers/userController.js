@@ -3,19 +3,33 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const multer = require("multer");
 const sharp = require("sharp");
+const cloudinary = require("cloudinary");
+const cloudinaryStorage = require("multer-storage-cloudinary");
 
 const multerStorage = multer.memoryStorage();
+
+cloudinary.config({
+  cloud_name: devztowmv,
+  api_key: 799932288286729,
+  api_secret: Q2A4aTvBaOhOKvymzIOD1MlwYIw,
+});
+const storage = cloudinaryStorage({
+  cloudinary,
+  folder: "user-images",
+  allowedFormats: ["jpg", "png"],
+  transformation: [{ width: 500, height: 500, crop: "limit" }],
+});
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
-    cb(new AppError("Not an image! Please upload only images.", 400), false);
+    cb(new AppError("Ju lutem ngarkoni nje imazh.", 400), false);
   }
 };
 
 const upload = multer({
-  storage: multerStorage,
+  storage: storage,
   fileFilter: multerFilter,
 });
 
@@ -29,8 +43,7 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`public/images/user-images/${req.file.filename}`);
+    .jpeg({ quality: 90 });
 
   next();
 });
