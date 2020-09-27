@@ -9,9 +9,9 @@ const cloudinaryStorage = require("multer-storage-cloudinary");
 const multerStorage = multer.memoryStorage();
 
 cloudinary.config({
-  cloud_name: devztowmv,
-  api_key: 799932288286729,
-  api_secret: Q2A4aTvBaOhOKvymzIOD1MlwYIw,
+  cloud_name: "devztowmv",
+  api_key: "799932288286729",
+  api_secret: "Q2A4aTvBaOhOKvymzIOD1MlwYIw",
 });
 const storage = cloudinaryStorage({
   cloudinary,
