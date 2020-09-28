@@ -31,7 +31,9 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
     .resize(500, 500)
     .toFormat("jpeg")
     .jpeg({ quality: 90 })
-    .toFile(`https://api.cloudinary.com/v1_1/devztowmv/image/upload`);
+    .toFile(
+      `cloudinary://799932288286729:Q2A4aTvBaOhOKvymzIOD1MlwYIw@devztowmv`
+    );
 
   next();
 });
