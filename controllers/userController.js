@@ -3,24 +3,54 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const multer = require("multer");
 const sharp = require("sharp");
-const cloudinary = require("cloudinary");
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
 
-const multerStorage = multer.memoryStorage();
-
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb(new AppError("Ju lutem ngarkoni nje imazh.", 400), false);
-  }
-};
-
-const upload = multer({
-  storage: multerStorage,
-  fileFilter: multerFilter,
+const s3 = new AWS.S3({
+  accessKeyId: "AKIAJPAHA33WTYAIRY3A",
+  secretAccessKey: "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",
+});
+const uploadS3 = multer({
+  storage: multerS3({
+    s3: s3,
+    acl: "public-read",
+    bucket: "nodeimages1",
+    metadata: (req, file, cb) => {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: (req, file, cb) => {
+      cb(null, Date.now().toString() + "-" + file.originalname);
+    },
+  }),
 });
 
-exports.uploadUserPhoto = upload.single("photo");
+// const multerStorage = multer.memoryStorage();
+
+// const multerFilter = (req, file, cb) => {
+//   if (file.mimetype.startsWith("image")) {
+//     cb(null, true);
+//   } else {
+//     cb(new AppError("Ju lutem ngarkoni nje imazh.", 400), false);
+//   }
+// };
+// const multerS3Config = multerS3({
+//   s3: s3Config,
+//   bucket: process.env.AWS_BUCKET_NAME,
+//   metadata: function (req, file, cb) {
+//       cb(null, { fieldName: file.fieldname });
+//   },
+//   key: function (req, file, cb) {
+//       console.log(file)
+//       cb(null, new Date().toISOString() + '-' + file.originalname)
+//   }
+// });
+
+// const upload = multer({
+//   storage: multerStorage,
+//   fileFilter: multerFilter,
+// });
+
+exports.uploadUserPhoto = uploadS3.single("photo");
 
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
@@ -30,8 +60,8 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`https://res.cloudinary.com/devztowmv/image/upload`);
+    .jpeg({ quality: 90 });
+  // .toFile(`https://res.cloudinary.com/devztowmv/image/upload`);
 
   next();
 });
