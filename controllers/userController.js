@@ -5,7 +5,7 @@ const multer = require("multer");
 const sharp = require("sharp");
 const cloudinary = require("cloudinary");
 
-const multerStorage = multer.memoryStorage();
+const multerStorage = multer.diskStorage();
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -31,9 +31,7 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
     .resize(500, 500)
     .toFormat("jpeg")
     .jpeg({ quality: 90 })
-    .toFile(
-      `cloudinary://799932288286729:Q2A4aTvBaOhOKvymzIOD1MlwYIw@devztowmv`
-    );
+    .toFile(`https://res.cloudinary.com/devztowmv/image/upload/v1601319755`);
 
   next();
 });
