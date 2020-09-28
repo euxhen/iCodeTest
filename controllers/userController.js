@@ -5,15 +5,25 @@ const multer = require("multer");
 const sharp = require("sharp");
 const cloudinary = require("cloudinary");
 
-const multerStorage = multer.diskStorage();
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "https://res.cloudinary.com/devztowmv/image/upload/v1601319755");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+  },
+});
 
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb(new AppError("Ju lutem ngarkoni nje imazh.", 400), false);
-  }
-};
+// const multerStorage = multer.diskStorage();
+
+// const multerFilter = (req, file, cb) => {
+//   if (file.mimetype.startsWith("image")) {
+//     cb(null, true);
+//   } else {
+//     cb(new AppError("Ju lutem ngarkoni nje imazh.", 400), false);
+//   }
+// };
 
 const upload = multer({
   storage: multerStorage,
@@ -22,19 +32,19 @@ const upload = multer({
 
 exports.uploadUserPhoto = upload.single("photo");
 
-exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
-  if (!req.file) return next();
+// exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+//   if (!req.file) return next();
 
-  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+//   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-  await sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`https://res.cloudinary.com/devztowmv/image/upload/v1601319755`);
+//   await sharp(req.file.buffer)
+//     .resize(500, 500)
+//     .toFormat("jpeg")
+//     .jpeg({ quality: 90 })
+//     .toFile(`https://res.cloudinary.com/devztowmv/image/upload/v1601319755`);
 
-  next();
-});
+//   next();
+// });
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
