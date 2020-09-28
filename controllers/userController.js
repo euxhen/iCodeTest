@@ -2,7 +2,7 @@ const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const multer = require("multer");
-const sharp = require("sharp");
+
 const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
 
@@ -19,36 +19,10 @@ const uploadS3 = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: (req, file, cb) => {
-      cb(null, Date.now().toString() + "-" + file.originalname);
+      cb(null, `user-${req.user.id}-${Date.now()}.jpeg`);
     },
   }),
 });
-
-// const multerStorage = multer.memoryStorage();
-
-// const multerFilter = (req, file, cb) => {
-//   if (file.mimetype.startsWith("image")) {
-//     cb(null, true);
-//   } else {
-//     cb(new AppError("Ju lutem ngarkoni nje imazh.", 400), false);
-//   }
-// };
-// const multerS3Config = multerS3({
-//   s3: s3Config,
-//   bucket: process.env.AWS_BUCKET_NAME,
-//   metadata: function (req, file, cb) {
-//       cb(null, { fieldName: file.fieldname });
-//   },
-//   key: function (req, file, cb) {
-//       console.log(file)
-//       cb(null, new Date().toISOString() + '-' + file.originalname)
-//   }
-// });
-
-// const upload = multer({
-//   storage: multerStorage,
-//   fileFilter: multerFilter,
-// });
 
 exports.uploadUserPhoto = uploadS3.single("photo");
 
@@ -56,12 +30,6 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-
-  // await sharp(req.file.buffer)
-  //   .resize(500, 500)
-  //   .toFormat("jpeg")
-  //   .jpeg({ quality: 90 });
-  // .toFile(`https://res.cloudinary.com/devztowmv/image/upload`);
 
   next();
 });
