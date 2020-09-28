@@ -17,13 +17,13 @@ const multerStorage = multer.diskStorage({
 
 // const multerStorage = multer.diskStorage();
 
-// const multerFilter = (req, file, cb) => {
-//   if (file.mimetype.startsWith("image")) {
-//     cb(null, true);
-//   } else {
-//     cb(new AppError("Ju lutem ngarkoni nje imazh.", 400), false);
-//   }
-// };
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new AppError("Ju lutem ngarkoni nje imazh.", 400), false);
+  }
+};
 
 const upload = multer({
   storage: multerStorage,
