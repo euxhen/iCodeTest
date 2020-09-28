@@ -7,7 +7,12 @@ const cloudinary = require("cloudinary");
 
 const multerStorage = multer.memoryStorage({
   destination: (req, file, cb) => {
-    cb(null, "https://res.cloudinary.com/devztowmv/image/upload/v1601319755");
+    cb(
+      null,
+      `https://res.cloudinary.com/devztowmv/image/upload/v1601319755/user-${
+        req.user.id
+      }-${Date.now()}.${ext}`
+    );
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split("/")[1];
