@@ -5,7 +5,7 @@ const multer = require("multer");
 const sharp = require("sharp");
 const cloudinary = require("cloudinary");
 
-const multerStorage = multer.diskStorage({
+const multerStorage = multer.memoryStorage({
   destination: (req, file, cb) => {
     cb(null, "https://res.cloudinary.com/devztowmv/image/upload/v1601319755");
   },
