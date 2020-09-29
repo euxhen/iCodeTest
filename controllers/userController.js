@@ -10,6 +10,7 @@ const s3 = new AWS.S3({
   accessKeyId: process.env.ACCESS_KEY_ID,
   secretAccessKey: process.env.SECRET_ACCESS_KEY,
 });
+
 const uploadS3 = multer({
   storage: multerS3({
     s3: s3,
@@ -25,10 +26,9 @@ const uploadS3 = multer({
   }),
 });
 
-exports.uploadUserPhoto = (req, res, next) => {
+exports.uploadUserPhoto = () => {
   uploadS3.single("photo");
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-  next();
 };
 
 const filterObj = (obj, ...allowedFields) => {
