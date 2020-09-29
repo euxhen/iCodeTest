@@ -14,7 +14,7 @@ const uploadS3 = multer({
   storage: multerS3({
     s3: s3,
     acl: "public-read",
-    bucket: "nodeimages2",
+    bucket: "nodeimages3",
     metadata: (req, file, cb) => {
       cb(null, { "Content-Type": "image/jpeg" });
     },
