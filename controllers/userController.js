@@ -26,10 +26,15 @@ const uploadS3 = multer({
   }),
 });
 
-exports.uploadUserPhoto = () => {
-  uploadS3.single("photo");
+exports.uploadUserPhoto = uploadS3.single("photo");
+
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-};
+
+  next();
+});
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
