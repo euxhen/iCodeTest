@@ -10,6 +10,7 @@ const s3 = new AWS.S3({
   accessKeyId: process.env.ACCESS_KEY_ID,
   secretAccessKey: process.env.SECRET_ACCESS_KEY,
 });
+let key = `user-${req.user.id}-${Date.now()}.jpeg`;
 const uploadS3 = multer({
   storage: multerS3({
     s3: s3,
@@ -19,7 +20,7 @@ const uploadS3 = multer({
       cb(null, { "Content-Type": "image/jpeg" });
     },
     key: (req, file, cb) => {
-      cb(null, Date.now().toString());
+      cb(null, key);
     },
     contentType: multerS3.AUTO_CONTENT_TYPE,
   }),
@@ -30,7 +31,7 @@ exports.uploadUserPhoto = uploadS3.single("photo");
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  req.file.filename = key;
 
   next();
 });
