@@ -19,7 +19,7 @@ const uploadS3 = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: (req, file, cb) => {
-      cb(null, `user-${req.user.id}-${Date.now()}.jpeg`);
+      cb(null, `user-${req.user.id}-${Date.now()}`);
     },
   }),
 });
@@ -29,7 +29,7 @@ exports.uploadUserPhoto = uploadS3.single("photo");
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  req.file.filename = `user-${req.user.id}-${Date.now()}`;
 
   next();
 });
