@@ -31,7 +31,7 @@ exports.uploadUserPhoto = uploadS3.single("photo");
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  req.file.filename = `user-${req.user.id}-${Date.now().toString()}.jpeg`;
+  req.file.filename = key;
 
   next();
 });
