@@ -16,7 +16,7 @@ const uploadS3 = multer({
     acl: "public-read",
     bucket: "nodeimages2",
     metadata: (req, file, cb) => {
-      cb(null, { fieldName: file.fieldname });
+      cb(null, { "Content-Type": "image/jpeg" });
     },
     key: (req, file, cb) => {
       cb(null, `user-${req.user.id}-${Date.now()}.jpeg`);
