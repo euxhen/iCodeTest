@@ -10,28 +10,25 @@ const s3 = new AWS.S3({
   accessKeyId: process.env.ACCESS_KEY_ID,
   secretAccessKey: process.env.SECRET_ACCESS_KEY,
 });
-let key = `user-${req.user.id}-${Date.now()}.jpeg`;
-const uploadS3 = multer({
-  storage: multerS3({
-    s3: s3,
-    acl: "public-read",
-    bucket: "nodeimages3",
-    metadata: (req, file, cb) => {
-      cb(null, { "Content-Type": "image/jpeg" });
-    },
-    key: (req, file, cb) => {
-      cb(null, key);
-    },
-    contentType: multerS3.AUTO_CONTENT_TYPE,
-  }),
-});
 
-exports.uploadUserPhoto = uploadS3.single("photo");
-
-exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+exports.uploadUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
-
-  req.file.filename = key;
+  const uploadS3 = multer({
+    storage: multerS3({
+      s3: s3,
+      acl: "public-read",
+      bucket: "nodeimages3",
+      metadata: (req, file, cb) => {
+        cb(null, { "Content-Type": "image/jpeg" });
+      },
+      key: (req, file, cb) => {
+        cb(null, `user-${req.user.id}-${Date.now()}.jpeg`);
+      },
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+    }),
+  });
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  uploadS3.single("photo");
 
   next();
 });
