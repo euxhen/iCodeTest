@@ -10,22 +10,22 @@ const s3 = new AWS.S3({
   accessKeyId: process.env.ACCESS_KEY_ID,
   secretAccessKey: process.env.SECRET_ACCESS_KEY,
 });
+const uploadS3 = multer({
+  storage: multerS3({
+    s3: s3,
+    acl: "public-read",
+    bucket: "nodeimages3",
+    metadata: (req, file, cb) => {
+      cb(null, { "Content-Type": "image/jpeg" });
+    },
+    key: (req, file, cb) => {
+      cb(null, `user-${req.user.id}-${Date.now()}.jpeg`);
+    },
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+  }),
+});
 
 exports.uploadUserPhoto = catchAsync(async (req, res, next) => {
-  const uploadS3 = multer({
-    storage: multerS3({
-      s3: s3,
-      acl: "public-read",
-      bucket: "nodeimages3",
-      metadata: (req, file, cb) => {
-        cb(null, { "Content-Type": "image/jpeg" });
-      },
-      key: (req, file, cb) => {
-        cb(null, `user-${req.user.id}-${Date.now()}.jpeg`);
-      },
-      contentType: multerS3.AUTO_CONTENT_TYPE,
-    }),
-  });
   if (!req.file) return next();
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
   uploadS3.single("photo");
