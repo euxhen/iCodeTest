@@ -20,7 +20,7 @@ const uploadS3 = multer({
       cb(null, { "Content-Type": "image/jpeg" });
     },
     key: (req, file, cb) => {
-      cb(null, `user-${req.user.id}-${Date.now().toString()}.jpeg`);
+      cb(null, `user-${req.user.id}-.jpeg`);
     },
     contentType: multerS3.AUTO_CONTENT_TYPE,
   }),
@@ -31,7 +31,7 @@ exports.uploadUserPhoto = uploadS3.single("photo");
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  req.file.filename = key;
+  req.file.filename = `user-${req.user.id}-.jpeg`;
 
   next();
 });
