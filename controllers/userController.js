@@ -12,7 +12,6 @@ const s3 = new AWS.S3({
 });
 
 exports.uploadUserPhoto = catchAsync(async (req, res, next) => {
-  if (!req.file) return next();
   const uploadS3 = multer({
     storage: multerS3({
       s3: s3,
@@ -27,6 +26,7 @@ exports.uploadUserPhoto = catchAsync(async (req, res, next) => {
       contentType: multerS3.AUTO_CONTENT_TYPE,
     }),
   });
+  if (!req.file) return next();
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
   uploadS3.single("photo");
 
