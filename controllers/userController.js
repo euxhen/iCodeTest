@@ -21,6 +21,7 @@ const uploadS3 = multer({
     key: (req, file, cb) => {
       cb(null, `user-${req.user.id}-${Date.now()}.jpeg`);
     },
+    contentType: "image/jpeg",
   }),
 });
 
