@@ -27,8 +27,8 @@ const uploadS3 = multer({
 
 exports.uploadUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
-  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
   await uploadS3.single("photo");
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
   next();
 });
